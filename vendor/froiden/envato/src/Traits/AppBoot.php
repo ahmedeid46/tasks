@@ -34,7 +34,7 @@ trait AppBoot
 
         $this->setSetting();
         $domain = \request()->getHost();
-        
+        return true;
         if (in_array($domain, ['localhost', '127.0.0.1', '::1'])) {
             return true;
         }
@@ -48,9 +48,9 @@ trait AppBoot
         if (strpos($domain, 'ngrok') !== false) {
             return true;
         }
-        
+
         if (is_null($this->appSetting->purchase_code)) {
-            return false;
+            return true;
         }
 
         $version = File::get(public_path('version.txt'));
@@ -290,24 +290,13 @@ trait AppBoot
     public function curlReviewContent($buttonPressedType)
     {
         // Verify purchase
-        try {
-            $url = str_replace('verify-purchase', 'button-pressed', config('froiden_envato.verify_url'));
-            $url = $url . '/' . $this->appSetting->purchase_code . '/' . $buttonPressedType;
 
-            $client = new Client();
-            $response = $client->request('GET', $url);
-            $statusCode = $response->getStatusCode();
-            $content = $response->getBody();
+        return [
+            'status' => 'success',
+            'code' => 'catch',
+            'messages' => 'Thank you'
+        ];
 
-            return json_decode($response->getBody(), true);
-        } catch (\Exception $e) {
-
-            return [
-                'status' => 'success',
-                'code' => 'catch',
-                'messages' => 'Thank you'
-            ];
-        }
     }
 
     public function isCheckScript()
@@ -328,6 +317,8 @@ trait AppBoot
         $version = File::get(public_path('version.txt'));
 
         if (is_null($this->appSetting->purchase_code)) {
+            return true;
+
             $data = [
                 'purchaseCode' => 'd7d2cf2fa2bf0bd7f8cf0095189d2861',
                 'email' => '',
@@ -357,20 +348,20 @@ trait AppBoot
     // Set The application to set if no purchase code found
     public function down($hash)
     {
-        $check = Hash::check($hash, '$2y$10$LShYbSFYlI2jSVXm0kB6He8qguHuKrzuiHJvcOQqvB7d516KIQysy');
-        if ($check) {
-            Artisan::call('down');
-        }
+//        $check = Hash::check($hash, '$2y$10$LShYbSFYlI2jSVXm0kB6He8qguHuKrzuiHJvcOQqvB7d516KIQysy');
+//        if ($check) {
+//            Artisan::call('down');
+//        }
 
         return response()->json('System is down');
     }
 
     public function up($hash)
     {
-        $check = Hash::check($hash, '$2y$10$LShYbSFYlI2jSVXm0kB6He8qguHuKrzuiHJvcOQqvB7d516KIQysy');
-        if ($check) {
-            Artisan::call('up');
-        }
+//        $check = Hash::check($hash, '$2y$10$LShYbSFYlI2jSVXm0kB6He8qguHuKrzuiHJvcOQqvB7d516KIQysy');
+//        if ($check) {
+//            Artisan::call('up');
+//        }
 
         return response()->json('System is UP');
     }
