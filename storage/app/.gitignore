@@ -1,4 +1,4 @@
-*
-!public/
-!.gitignore
-!tmp/
+#*
+#!public/
+#!.gitignore
+#!tmp/
